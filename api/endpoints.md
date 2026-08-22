@@ -1,67 +1,25 @@
-# Peer-Group Formation API Endpoints
+# EduConnect Peer-Group Formation API
 
-## Student APIs
+## API Overview
 
-### GET /api/students/{student_id}
+The EduConnect backend uses FastAPI to provide REST APIs for students, projects, peer groups, and group formation requests.
 
-Retrieves student profile information.
+Base URL:
 
-### GET /api/students/{student_id}/groups
-
-Retrieves the groups associated with a student.
+http://localhost:8000
 
 ---
 
-## Project APIs
+## 1. Health Check
 
-### GET /api/projects
+### GET /health
 
-Retrieves available projects.
+Checks whether the backend service is running.
 
-### GET /api/projects/{project_id}
+### Response
 
-Retrieves details of a specific project.
-
----
-
-## Group APIs
-
-### GET /api/groups
-
-Retrieves available peer groups.
-
-### GET /api/groups/{group_id}
-
-Retrieves details of a specific group.
-
-### POST /api/groups
-
-Creates a new peer group.
-
-### POST /api/groups/{group_id}/members
-
-Adds a student to a peer group.
-
-### DELETE /api/groups/{group_id}/members/{student_id}
-
-Removes a student from a peer group.
-
----
-
-## Group Formation APIs
-
-### POST /api/group-requests
-
-Creates a request for peer-group formation.
-
-### GET /api/group-requests/{request_id}
-
-Retrieves the status of a group formation request.
-
----
-
-## Real-Time API
-
-### WebSocket /ws/groups/{student_id}
-
-Provides real-time updates about group formation and group assignment.
+```json
+{
+  "status": "healthy",
+  "service": "peer-group-formation-api"
+}
