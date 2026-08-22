@@ -8,9 +8,9 @@ The architecture is designed to support scalable peer-group formation for studen
 
 ---
 
-# 2. Core Data Entities
+## 2. Core Data Entities
 
-## Student
+### Student
 
 Stores student profile information.
 
@@ -21,9 +21,7 @@ Attributes:
 - Email
 - Skills
 
----
-
-## Project
+### Project
 
 Stores information about collaborative projects.
 
@@ -34,9 +32,7 @@ Attributes:
 - Description
 - Required Skills
 
----
-
-## Group
+### Group
 
 Represents a peer group created for a project.
 
@@ -47,9 +43,7 @@ Attributes:
 - Group Name
 - Status
 
----
-
-## Group Member
+### Group Member
 
 Maintains the relationship between students and groups.
 
@@ -59,9 +53,7 @@ Attributes:
 - Group ID
 - Student ID
 
----
-
-## Group Request
+### Group Request
 
 Represents a student's request to join a project group.
 
@@ -74,7 +66,7 @@ Attributes:
 
 ---
 
-# 3. Frontend Layer
+## 3. React Frontend
 
 The React frontend provides the student-facing interface.
 
@@ -89,7 +81,7 @@ The frontend communicates with FastAPI using HTTP REST APIs.
 
 ---
 
-# 4. FastAPI Backend
+## 4. FastAPI Backend
 
 FastAPI acts as the main application and API layer.
 
@@ -102,13 +94,13 @@ It performs:
 - Event publishing
 - API response generation
 
-The main API endpoints are documented in:
+The API endpoints are documented in:
 
 `api/endpoints.md`
 
 ---
 
-# 5. PostgreSQL Database
+## 5. PostgreSQL Database
 
 PostgreSQL is the primary persistent storage layer.
 
@@ -124,19 +116,11 @@ The database schema is available in:
 
 `backend/schema.sql`
 
----
-
-# 6. Redis Cache
-
-Redis is used as a high-speed caching layer.
-
-For frequently accessed project information:
+The general flow is:
 
 ```text
-React
-  ↓
 FastAPI
-  ↓
-Redis
-  ↓
-Cache Hit → Return Data
+   ↓
+PostgreSQL
+   ↓
+Persistent Data
