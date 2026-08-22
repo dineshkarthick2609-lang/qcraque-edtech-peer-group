@@ -1,0 +1,118 @@
+{
+  "info": {
+    "_postman_id": "educonnect-student-api",
+    "name": "EduConnect Student API",
+    "description": "Postman collection for Student CRUD operations in the EduConnect Peer-Group Formation System.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "student_id",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Create Student",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"student_id\": \"STU004\",\n  \"name\": \"Dinesh Karthick\",\n  \"email\": \"dinesh@example.com\",\n  \"interests\": \"Artificial Intelligence, Web Development\",\n  \"skills\": \"Python, React, FastAPI\",\n  \"skill_level\": \"ADVANCED\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/students",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "students"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get All Students",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/students",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "students"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Student By ID",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/students/{{student_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "students",
+            "{{student_id}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Update Student",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"skill_level\": \"EXPERT\",\n  \"skills\": \"Python, React, FastAPI, PostgreSQL\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/students/{{student_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "students",
+            "{{student_id}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Delete Student",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{base_url}}/students/{{student_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "students",
+            "{{student_id}}"
+          ]
+        }
+      }
+    }
+  ]
+}
