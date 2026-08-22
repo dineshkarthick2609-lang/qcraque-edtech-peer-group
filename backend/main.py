@@ -7,12 +7,18 @@ from sqlalchemy import Column, Integer, String, ForeignKey, create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker, Session, relationship
 from fastapi import Depends
 
+import os
+
 
 # ============================================================
 # DATABASE CONFIGURATION
 # ============================================================
 
-DATABASE_URL = "sqlite:///./edutech.db"
+
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "sqlite:///./edutech.db"
+)
 
 engine = create_engine(
     DATABASE_URL,
