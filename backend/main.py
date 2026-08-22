@@ -1,4 +1,9 @@
 from typing import List, Optional
+import os
+import json
+import redis
+
+from kafka import KafkaProducer
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,7 +12,6 @@ from sqlalchemy import Column, Integer, String, ForeignKey, create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker, Session, relationship
 from fastapi import Depends
 
-import os
 
 
 # ============================================================
@@ -19,6 +23,30 @@ DATABASE_URL = os.getenv(
     "DATABASE_URL",
     "sqlite:///./edutech.db"
 )
+
+REDIS_URL = os.getenv(
+    "REDIS_URL",
+    "redis://localhost:6379"
+)
+
+redis_client = redis.Redis.from_url(
+    REDIS_URL,
+    decode_responses=True
+)
+
+KAFKA_BOOTSTRAP_SERVERS = os.getenv(
+    "KAFKA_BOOTSTRAP_SERVERS",
+    "localhost:9092"
+)
+
+try:
+    kafka_producer = KafkaProducer(
+        bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS,
+        value_serializer=lambda value: json.dumps(value).encode("utf-8")
+    )
+except Exception:
+    kafka_producer = None
+
 
 engine = create_engine(
     DATABASE_URL,
@@ -302,7 +330,34 @@ def create_student(
     response_model=List[ProjectResponse]
 )
 def get_projects(db: Session = Depends(get_db)):
-    return db.query(Project).all()
+
+    # Check Redis cache first
+    cached_projects = redis_client.get("projects")
+
+    if cached_projects:
+        return json.loads(cached_projects)
+
+    # Cache miss - get data from PostgreSQL
+    projects = db.query(Project).all()
+
+    project_data = [
+        {
+            "id": project.id,
+            "title": project.title,
+            "description": project.description,
+            "required_skills": project.required_skills
+        }
+        for project in projects
+    ]
+
+    # Store result in Redis
+    redis_client.set(
+        "projects",
+        json.dumps(project_data),
+        ex=300
+    )
+
+    return project_data
 
 
 @app.get(
@@ -421,6 +476,20 @@ def create_group_request(
     db.add(group_request)
     db.commit()
     db.refresh(group_request)
+
+    # Publish group formation event to Kafka
+    if kafka_producer:
+        kafka_producer.send(
+            "group-formation-requests",
+            {
+                "request_id": group_request.id,
+                "student_id": group_request.student_id,
+                "project_id": group_request.project_id,
+                "status": group_request.status
+            }
+        )
+
+        kafka_producer.flush()
 
     return group_request
 
