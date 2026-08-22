@@ -1,45 +1,142 @@
-# Data Flow Design
+# EduConnect Data Flow Description
 
-## Overview
+## 1. Overview
 
-The Scalable Peer-Group Formation System uses React, FastAPI, PostgreSQL, Redis, Apache Kafka, and WebSocket to provide an efficient and real-time group formation process.
+The EduConnect peer-group formation system uses a full-stack architecture consisting of React, FastAPI, PostgreSQL, Redis, Kafka, and WebSocket communication.
 
-## Data Flow
+The architecture is designed to support scalable peer-group formation for students working on collaborative academic projects.
 
-1. Students interact with the React frontend.
-2. React sends requests to the FastAPI backend.
-3. FastAPI validates and processes the request.
-4. Redis is checked for frequently accessed student and group data.
-5. PostgreSQL stores persistent student, project, group, and assignment data.
-6. Group formation requests are published to Apache Kafka.
-7. The group formation service processes these requests.
-8. Group assignments are stored in PostgreSQL.
-9. WebSocket sends real-time updates to the React frontend.
+---
 
-## Main Components
+# 2. Core Data Entities
 
-### React
-Provides the user interface for students.
+## Student
 
-### FastAPI
-Handles API requests and business logic.
+Stores student profile information.
 
-### PostgreSQL
-Stores persistent application data.
+Attributes:
 
-### Redis
-Provides fast caching for frequently accessed data.
+- Student ID
+- Name
+- Email
+- Skills
 
-### Apache Kafka
-Handles asynchronous group formation requests and events.
+---
 
-### WebSocket
-Provides real-time group status updates.
+## Project
 
-## Main Entities
+Stores information about collaborative projects.
 
-- Student
-- Project
-- Group
-- Group Member
-- Group Request
+Attributes:
+
+- Project ID
+- Title
+- Description
+- Required Skills
+
+---
+
+## Group
+
+Represents a peer group created for a project.
+
+Attributes:
+
+- Group ID
+- Project ID
+- Group Name
+- Status
+
+---
+
+## Group Member
+
+Maintains the relationship between students and groups.
+
+Attributes:
+
+- Membership ID
+- Group ID
+- Student ID
+
+---
+
+## Group Request
+
+Represents a student's request to join a project group.
+
+Attributes:
+
+- Request ID
+- Student ID
+- Project ID
+- Status
+
+---
+
+# 3. Frontend Layer
+
+The React frontend provides the student-facing interface.
+
+Students can:
+
+1. View available projects.
+2. View project requirements.
+3. Submit a peer-group formation request.
+4. View group status.
+
+The frontend communicates with FastAPI using HTTP REST APIs.
+
+---
+
+# 4. FastAPI Backend
+
+FastAPI acts as the main application and API layer.
+
+It performs:
+
+- Request validation
+- Business logic
+- Database operations
+- Cache access
+- Event publishing
+- API response generation
+
+The main API endpoints are documented in:
+
+`api/endpoints.md`
+
+---
+
+# 5. PostgreSQL Database
+
+PostgreSQL is the primary persistent storage layer.
+
+It stores:
+
+- Students
+- Projects
+- Groups
+- Group members
+- Group requests
+
+The database schema is available in:
+
+`backend/schema.sql`
+
+---
+
+# 6. Redis Cache
+
+Redis is used as a high-speed caching layer.
+
+For frequently accessed project information:
+
+```text
+React
+  ↓
+FastAPI
+  ↓
+Redis
+  ↓
+Cache Hit → Return Data
